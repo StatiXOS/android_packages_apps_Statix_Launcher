@@ -16,16 +16,21 @@
 
 package com.statix.launcher;
 
+import static com.statix.launcher.popup.StatixSystemShortcut.PAUSE_APPS;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.view.View;
 
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 
 import com.statix.launcher.hpapps.db.HpDatabaseHelper;
+
+import java.util.stream.Stream;
 
 public class StatixLauncher extends QuickstepLauncher {
 
@@ -52,5 +57,11 @@ public class StatixLauncher extends QuickstepLauncher {
         } else {
             return super.startActivitySafely(v, intent, item);
         }
+    }
+
+    @Override
+    public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
+        // Finite sequence so we will always be able to add PAUSE_APPS.
+        return Stream.concat(super.getSupportedShortcuts(), Stream.of(PAUSE_APPS));
     }
 }
