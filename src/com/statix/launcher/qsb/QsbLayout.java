@@ -3,6 +3,9 @@ package com.statix.launcher.qsb;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -20,6 +23,9 @@ public class QsbLayout extends FrameLayout {
     AssistantIconView assistantIcon;
     Context mContext;
 
+    private static final String LENS_ACTIVITY = "com.google.android.apps.lens.MainActivity";
+    private static final String LENS_URI = "google://lens";
+
     public QsbLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
@@ -34,12 +40,11 @@ public class QsbLayout extends FrameLayout {
         super.onFinishInflate();
         assistantIcon = findViewById(R.id.mic_icon);
         assistantIcon.setIcon();
-        lensIcon = findViewById(R.id.lens_icon);
         String searchPackage = QsbContainerView.getSearchWidgetPackageName(mContext);
         setOnClickListener(view -> {
             mContext.startActivity(new Intent("android.search.action.GLOBAL_SEARCH").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK).setPackage(searchPackage));
         });
-        if (searchPackage == "com.google.android.googlequicksearchbox") {
+        if (searchPackage.equals("com.google.android.googlequicksearchbox")) {
             setupLensIcon();
         }
     }
@@ -65,14 +70,20 @@ public class QsbLayout extends FrameLayout {
     }
 
     private void setupLensIcon() {
-        Intent lensIntent = Intent.makeMainActivity(new ComponentName("com.google.ar.lens", "com.google.vr.apps.ornament.app.lens.LensLauncherActivity")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        if (getContext().getPackageManager().resolveActivity(lensIntent, 0) == null){
-            return;
-        }
+        lensIcon = findViewById(R.id.lens_icon);
         lensIcon.setVisibility(View.VISIBLE);
         lensIcon.setImageResource(R.drawable.ic_lens_color);
 
         lensIcon.setOnClickListener(view -> {
+            Intent lensIntent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putString("caller_package", "com.google.android.googlequicksearchbox");
+            bundle.putLong("start_activity_time_nanos", SystemClock.elapsedRealtimeNanos());
+            lensIntent.setComponent(new ComponentName("com.google.android.googlequicksearchbox", LENS_ACTIVITY))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .setPackage("com.google.android.googlequicksearchbox")
+                    .setData(Uri.parse(LENS_URI))
+                    .putExtra("lens_activity_params", bundle);
             mContext.startActivity(lensIntent);
         });
     }
