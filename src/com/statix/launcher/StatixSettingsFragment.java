@@ -1,6 +1,7 @@
 package com.statix.launcher;
 
 import static com.statix.launcher.OverlayCallbackImpl.KEY_ENABLE_MINUS_ONE;
+import static com.statix.launcher.qsb.QsbLayout.KEY_SHOW_QSB;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -11,15 +12,18 @@ import com.android.launcher3.settings.SettingsActivity.LauncherSettingsFragment;
 
 public class StatixSettingsFragment extends LauncherSettingsFragment {
 
-    protected static final String GSA_PACKAGE = "com.google.android.googlequicksearchbox";
-
     private Preference mShowGoogleAppPref;
+    private Preference mShowQsbPref;
 
     @Override
     protected boolean initPreference(Preference preference) {
         switch (preference.getKey()) {
             case KEY_ENABLE_MINUS_ONE:
                 mShowGoogleAppPref = preference;
+                updateIsGoogleAppEnabled();
+                return true;
+            case KEY_SHOW_QSB:
+                mShowQsbPref = preference;
                 updateIsGoogleAppEnabled();
                 return true;
         }
@@ -29,7 +33,10 @@ public class StatixSettingsFragment extends LauncherSettingsFragment {
 
     private void updateIsGoogleAppEnabled() {
         if (mShowGoogleAppPref != null) {
-            mShowGoogleAppPref.setEnabled(isGSAEnabled(getContext()));
+            mShowGoogleAppPref.setEnabled(Utilities.isGSAEnabled(getContext()));
+        }
+        if (mShowQsbPref != null) {
+            mShowQsbPref.setEnabled(Utilities.isGSAEnabled(getContext()));
         }
     }
 
@@ -37,13 +44,5 @@ public class StatixSettingsFragment extends LauncherSettingsFragment {
     public void onResume() {
         super.onResume();
         updateIsGoogleAppEnabled();
-    }
-
-    public static boolean isGSAEnabled(Context context) {
-        try {
-            return context.getPackageManager().getApplicationInfo(GSA_PACKAGE, 0).enabled;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
     }
 }

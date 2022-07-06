@@ -29,6 +29,7 @@ public class QsbLayout extends FrameLayout implements
     ImageView mLensIcon;
     Context mContext;
 
+    public static final String KEY_SHOW_QSB = "show_qsb";
     private static final String LENS_ACTIVITY = "com.google.android.apps.lens.MainActivity";
     private static final String LENS_URI = "google://lens";
 
@@ -40,6 +41,7 @@ public class QsbLayout extends FrameLayout implements
     public QsbLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
+        Utilities.getPrefs(mContext).registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -49,8 +51,6 @@ public class QsbLayout extends FrameLayout implements
         mGoogleIcon = findViewById(R.id.g_icon);
         mLensIcon = findViewById(R.id.lens_icon);
         setIcons();
-
-        Utilities.getPrefs(mContext).registerOnSharedPreferenceChangeListener(this);
 
         String searchPackage = QsbContainerView.getSearchWidgetPackageName(mContext);
         setOnClickListener(view -> {
@@ -78,13 +78,14 @@ public class QsbLayout extends FrameLayout implements
                 measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
             }
         }
-
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (key.equals(Themes.KEY_THEMED_ICONS)) {
             setIcons();
+        } else if (key.equals(KEY_SHOW_QSB)) {
+            setVisibility(com.statix.launcher.Utilities.showQSB(mContext) ? View.VISIBLE : View.GONE);
         }
     }
 

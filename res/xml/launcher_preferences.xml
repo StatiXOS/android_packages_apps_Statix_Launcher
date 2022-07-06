@@ -65,6 +65,13 @@
         <intent android:action="android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS" />
     </androidx.preference.PreferenceScreen>
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:title="@string/show_qsb_title"
+        android:key="show_qsb"
+        android:summary="@string/show_qsb_summary">
+    </SwitchPreference>
+
     <androidx.preference.PreferenceScreen
         android:key="pref_developer_options"
         android:persistent="false"
