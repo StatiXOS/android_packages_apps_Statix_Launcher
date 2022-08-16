@@ -16,14 +16,12 @@
 
 package com.statix.launcher;
 
-import android.annotation.ColorInt;
 import android.app.WallpaperColors;
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.provider.Settings;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -34,15 +32,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LocalColorExtractor;
 
-import dev.kdrag0n.colorkt.Color;
-import dev.kdrag0n.colorkt.cam.Zcam;
-import dev.kdrag0n.colorkt.data.Illuminants;
-import dev.kdrag0n.colorkt.rgb.Srgb;
-import dev.kdrag0n.colorkt.tristimulus.CieXyzAbs;
-import dev.kdrag0n.colorkt.ucs.lab.CieLab;
-import dev.kdrag0n.monet.theme.ColorScheme;
-import dev.kdrag0n.monet.theme.DynamicColorScheme;
-import dev.kdrag0n.monet.theme.MaterialYouTargets;
+import com.android.systemui.monet.ColorScheme;
+import com.android.systemui.monet.ColorScheme.Style;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,25 +152,14 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
     @Override
     public SparseIntArray generateColorsOverride(WallpaperColors colors) {
         SparseIntArray colorRes = new SparseIntArray(5 * 13);
-        double luminance = (double) Settings.Secure.getLong(mContext.getContentResolver(), "monet_engine_white_luminance_user", (long) CieXyzAbs.DEFAULT_SDR_WHITE_LUMINANCE);
-        Zcam.ViewingConditions cond = new Zcam.ViewingConditions(
-            /* surroundFactor */ Zcam.ViewingConditions.SURROUND_AVERAGE,
-            /* adaptingLuminance */ 0.4 * luminance,
-            /* backgroundLuminance */ new CieLab(50.0, 0.0, 0.0, Illuminants.D65)
-                    .toXyz().getY() * luminance,
-            /* referenceWhite */ CieXyzAbs.fromRel(Illuminants.D65, luminance)
-        );
-        ColorScheme targets = new MaterialYouTargets(getChroma(), false, cond);
-        @ColorInt int colorOverride = Settings.Secure.getInt(mContext.getContentResolver(), "monet_engine_color_override", -1);
-        Color color = new Srgb(colorOverride != -1 ? colorOverride : colors.getPrimaryColor().toArgb());
-        ColorScheme colorScheme = new DynamicColorScheme(targets, color, getChroma(), cond, true);
-
+        boolean darkMode = mContext.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES;
+        ColorScheme colorScheme = new ColorScheme(colors, darkMode, Style.TONAL_SPOT);
         addColorsToArray(colorScheme.getAccent1(), ACCENT1_RES, colorRes);
         addColorsToArray(colorScheme.getAccent2(), ACCENT2_RES, colorRes);
         addColorsToArray(colorScheme.getAccent3(), ACCENT3_RES, colorRes);
         addColorsToArray(colorScheme.getNeutral1(), NEUTRAL1_RES, colorRes);
         addColorsToArray(colorScheme.getNeutral2(), NEUTRAL2_RES, colorRes);
-
         return colorRes;
     }
 
@@ -191,7 +171,6 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
             return;
         }
         Launcher launcher = (Launcher) activityContext;
-        Resources res = launcher.getResources();
         DeviceProfile dp = launcher.getDeviceProfile().inv.getDeviceProfile(launcher);
         float screenWidth = dp.widthPx;
         float screenHeight = dp.heightPx;
@@ -237,9 +216,5 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
         if (listener != null) {
             listener.onColorsChanged(generateColorsOverride(colors));
         }
-    }
-
-    private float getChroma() {
-        return Settings.Secure.getFloat(mContext.getContentResolver(), "monet_engine_chroma_factor", 1.0f);
     }
 }
