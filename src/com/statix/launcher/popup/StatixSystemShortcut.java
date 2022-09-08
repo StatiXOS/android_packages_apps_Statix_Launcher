@@ -35,21 +35,20 @@ public class StatixSystemShortcut {
     public static class PauseApps<T extends Context & ActivityContext> extends SystemShortcut<T> {
 
         public PauseApps(T target, ItemInfo itemInfo, View originalView) {
-            super(R.drawable.ic_hourglass_top, R.string.paused_apps_drop_target_label, target,
+            super(R.drawable.ic_hourglass, R.string.paused_apps_drop_target_label, target,
                     itemInfo, originalView);
         }
 
         @Override
         public void onClick(View view) {
-            CharSequence appLabel = view.getContext().getPackageManager().getApplicationLabel(
-                    new PackageManagerHelper(view.getContext()).getApplicationInfo(
+            Context context = view.getContext();
+            CharSequence appLabel = context.getPackageManager().getApplicationLabel(
+                    new PackageManagerHelper(context).getApplicationInfo(
                             mItemInfo.getTargetComponent().getPackageName(), mItemInfo.user,0));
-            new AlertDialog.Builder(view.getContext())
-                    .setIcon(R.drawable.ic_hourglass_top)
-                    .setTitle(view.getContext().getString(R.string.pause_apps_dialog_title,
+            new AlertDialog.Builder(context)
+                    .setTitle(context.getString(R.string.pause_apps_dialog_title,
                             appLabel))
-                    .setMessage(view.getContext().getString(R.string.pause_apps_dialog_message,
-                            appLabel))
+                    .setView(R.layout.pause_apps_dialog)
                     .setNegativeButton(android.R.string.cancel, null)
                     .setPositiveButton(R.string.pause, new DialogInterface.OnClickListener() {
                         @Override
@@ -60,11 +59,10 @@ public class StatixSystemShortcut {
                                                 mItemInfo.getTargetComponent().getPackageName()},
                                         true, null, null,
                                         new SuspendDialogInfo.Builder()
-                                                .setIcon(R.drawable.ic_hourglass_top)
                                                 .setTitle(R.string.paused_apps_dialog_title)
                                                 .setMessage(R.string.paused_apps_dialog_message)
                                                 .setNeutralButtonAction(BUTTON_ACTION_UNSUSPEND)
-                                                .build(), view.getContext().getOpPackageName(),
+                                                .build(), context.getOpPackageName(),
                                         mItemInfo.user.getIdentifier());
                             } catch (RemoteException e) {
                                 Log.e(TAG, "Failed to pause app", e);
