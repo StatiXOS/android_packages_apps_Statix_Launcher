@@ -49,13 +49,6 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
 
     private static final String KEY_COLOR_SOURCE = "android.theme.customization.color_source";
 
-    // Shade number -> color resource ID maps
-    private static final List<Integer> ACCENT1_RES = new ArrayList();
-    private static final List<Integer> ACCENT2_RES = new ArrayList();
-    private static final List<Integer> ACCENT3_RES = new ArrayList();
-    private static final List<Integer> NEUTRAL1_RES = new ArrayList();
-    private static final List<Integer> NEUTRAL2_RES = new ArrayList();
-
     private Context mContext;
     private final WallpaperManager wallpaperManager;
     private Listener listener;
@@ -65,72 +58,71 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
     // For calculating and returning bounds
     private final RectF tempRectF = new RectF();
 
-    static {
-        ACCENT1_RES.add(android.R.color.system_accent1_10);
-        ACCENT1_RES.add(android.R.color.system_accent1_50);
-        ACCENT1_RES.add(android.R.color.system_accent1_100);
-        ACCENT1_RES.add(android.R.color.system_accent1_200);
-        ACCENT1_RES.add(android.R.color.system_accent1_300);
-        ACCENT1_RES.add(android.R.color.system_accent1_400);
-        ACCENT1_RES.add(android.R.color.system_accent1_500);
-        ACCENT1_RES.add(android.R.color.system_accent1_600);
-        ACCENT1_RES.add(android.R.color.system_accent1_700);
-        ACCENT1_RES.add(android.R.color.system_accent1_800);
-        ACCENT1_RES.add(android.R.color.system_accent1_900);
-        ACCENT1_RES.add(android.R.color.system_accent1_1000);
+    private static final int[] accent = {
+            android.R.color.system_accent1_10,
+            android.R.color.system_accent1_50,
+            android.R.color.system_accent1_100,
+            android.R.color.system_accent1_200,
+            android.R.color.system_accent1_300,
+            android.R.color.system_accent1_400,
+            android.R.color.system_accent1_500,
+            android.R.color.system_accent1_600,
+            android.R.color.system_accent1_700,
+            android.R.color.system_accent1_800,
+            android.R.color.system_accent1_900,
+            android.R.color.system_accent1_1000,
+            android.R.color.system_accent2_10,
+            android.R.color.system_accent2_50,
+            android.R.color.system_accent2_100,
+            android.R.color.system_accent2_200,
+            android.R.color.system_accent2_300,
+            android.R.color.system_accent2_400,
+            android.R.color.system_accent2_500,
+            android.R.color.system_accent2_600,
+            android.R.color.system_accent2_700,
+            android.R.color.system_accent2_800,
+            android.R.color.system_accent2_900,
+            android.R.color.system_accent2_1000,
+            android.R.color.system_accent3_10,
+            android.R.color.system_accent3_50,
+            android.R.color.system_accent3_100,
+            android.R.color.system_accent3_200,
+            android.R.color.system_accent3_300,
+            android.R.color.system_accent3_400,
+            android.R.color.system_accent3_500,
+            android.R.color.system_accent3_600,
+            android.R.color.system_accent3_700,
+            android.R.color.system_accent3_800,
+            android.R.color.system_accent3_900,
+            android.R.color.system_accent3_1000
+    };
 
-        ACCENT2_RES.add(android.R.color.system_accent2_10);
-        ACCENT2_RES.add(android.R.color.system_accent2_50);
-        ACCENT2_RES.add(android.R.color.system_accent2_100);
-        ACCENT2_RES.add(android.R.color.system_accent2_200);
-        ACCENT2_RES.add(android.R.color.system_accent2_300);
-        ACCENT2_RES.add(android.R.color.system_accent2_400);
-        ACCENT2_RES.add(android.R.color.system_accent2_500);
-        ACCENT2_RES.add(android.R.color.system_accent2_600);
-        ACCENT2_RES.add(android.R.color.system_accent2_700);
-        ACCENT2_RES.add(android.R.color.system_accent2_800);
-        ACCENT2_RES.add(android.R.color.system_accent2_900);
-        ACCENT2_RES.add(android.R.color.system_accent2_1000);
-
-        ACCENT3_RES.add(android.R.color.system_accent3_10);
-        ACCENT3_RES.add(android.R.color.system_accent3_50);
-        ACCENT3_RES.add(android.R.color.system_accent3_100);
-        ACCENT3_RES.add(android.R.color.system_accent3_200);
-        ACCENT3_RES.add(android.R.color.system_accent3_300);
-        ACCENT3_RES.add(android.R.color.system_accent3_400);
-        ACCENT3_RES.add(android.R.color.system_accent3_500);
-        ACCENT3_RES.add(android.R.color.system_accent3_600);
-        ACCENT3_RES.add(android.R.color.system_accent3_700);
-        ACCENT3_RES.add(android.R.color.system_accent3_800);
-        ACCENT3_RES.add(android.R.color.system_accent3_900);
-        ACCENT3_RES.add(android.R.color.system_accent3_1000);
-
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_10);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_50);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_100);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_200);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_300);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_400);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_500);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_600);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_700);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_800);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_900);
-        NEUTRAL1_RES.add(android.R.color.system_neutral1_1000);
-
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_10);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_50);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_100);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_200);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_300);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_400);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_500);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_600);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_700);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_800);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_900);
-        NEUTRAL2_RES.add(android.R.color.system_neutral2_1000);
-    }
+    private static final int[] neutral = {
+            android.R.color.system_neutral1_10,
+            android.R.color.system_neutral1_50,
+            android.R.color.system_neutral1_100,
+            android.R.color.system_neutral1_200,
+            android.R.color.system_neutral1_300,
+            android.R.color.system_neutral1_400,
+            android.R.color.system_neutral1_500,
+            android.R.color.system_neutral1_600,
+            android.R.color.system_neutral1_700,
+            android.R.color.system_neutral1_800,
+            android.R.color.system_neutral1_900,
+            android.R.color.system_neutral1_1000,
+            android.R.color.system_neutral2_10,
+            android.R.color.system_neutral2_50,
+            android.R.color.system_neutral2_100,
+            android.R.color.system_neutral2_200,
+            android.R.color.system_neutral2_300,
+            android.R.color.system_neutral2_400,
+            android.R.color.system_neutral2_500,
+            android.R.color.system_neutral2_600,
+            android.R.color.system_neutral2_700,
+            android.R.color.system_neutral2_800,
+            android.R.color.system_neutral2_900,
+            android.R.color.system_neutral2_1000
+    };
 
     public ThemedLocalColorExtractor(Context context) {
         mContext = context;
@@ -148,10 +140,10 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
     }
 
     private static void addColorsToArray(List<Integer> colors,
-            List<Integer> resMap, SparseIntArray array) {
-        for (int i = 0; i < colors.size(); i++) {
+            int[] resMap, SparseIntArray array) {
+        for (int i = 0; i < resMap.length; i++) {
             int shade = colors.get(i);
-            int resId = resMap.get(i);
+            int resId = resMap[i];
             array.put(resId, 0xff000000 | shade);
         }
     }
@@ -166,15 +158,14 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
         if (!applyOverlay) {
             return null;
         }
-        SparseIntArray colorRes = new SparseIntArray(5 * 12);
+        SparseIntArray colorRes = new SparseIntArray(5 * 13);
         boolean darkMode = (mContext.getResources().getConfiguration().uiMode
                 & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         ColorScheme colorScheme = new ColorScheme(colors, darkMode, Style.VIBRANT);
-        addColorsToArray(colorScheme.getAccent1(), ACCENT1_RES, colorRes);
-        addColorsToArray(colorScheme.getAccent2(), ACCENT2_RES, colorRes);
-        addColorsToArray(colorScheme.getAccent3(), ACCENT3_RES, colorRes);
-        addColorsToArray(colorScheme.getNeutral1(), NEUTRAL1_RES, colorRes);
-        addColorsToArray(colorScheme.getNeutral2(), NEUTRAL2_RES, colorRes);
+
+        addColorsToArray(colorScheme.getAllAccentColors(), accent, colorRes);
+        addColorsToArray(colorScheme.getAllNeutralColors(), neutral, colorRes);
+
         return colorRes;
     }
 
