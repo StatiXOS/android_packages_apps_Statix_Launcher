@@ -38,7 +38,6 @@ android_app {
         "monet",
     ],
     srcs: [
-        ":launcher-src-no-build-config",
         "src/**/*.java",
         "src_build_config/**/*.java",
     ],
