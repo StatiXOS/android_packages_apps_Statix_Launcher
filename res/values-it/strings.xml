@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+* Copyright (C) 2016 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+-->
+
+<resources>
+
+    <!-- Settings title to show Google Now at -1 screen on launcher. [CHAR LIMIT=50] -->
+    <string name="title_show_google_app">Mostra app Google</string>
+    <!-- Settings message explaining when the -1 screen is available on an LTR device. [CHAR LIMIT=100] -->
+    <string name="msg_minus_one_on_left">Scorrendo a sinistra dalla schermata home</string>
+    <!-- Settings message explaining when the -1 screen is available on an RTL device. [CHAR LIMIT=100] -->
+    <string name="msg_minus_one_on_right">Scorrendo a destra dalla schermata home</string>
+    <string name="pref_show_google_now_summary" translatable="false">@string/msg_minus_one_on_left</string>
+
+    <!-- Suggestions -->
+    <string name="suggestion_pref_screen_title">Suggerimenti</string>
+    <string name="suggestion_pref_screen_desc">Suggerimenti nella schermata home ed elenco app</string>
+
+    <!-- Gestures -->
+    <string name="pref_dt_gesture_title">Doppio tocco per spegnere</string>
+    <string name="pref_dt_gesture_summary">Tocca due volte uno spazio vuoto per spegnere lo schermo</string>
+
+    <!-- Hidden/protected apps -->
+    <string name="hp_apps_manager_name">App nascoste e protette</string>
+    <string name="hp_apps_auth_manager">Sblocca per gestire le app nascoste e protette</string>
+    <string name="hp_apps_auth_open_app">Sblocca per aprire %1$s</string>
+    <string name="hp_apps_loading">Caricamento\u2026</string>
+    <string name="hp_apps_no_lock_error">Imposta un blocco schermo per attivare le restrizioni</string>
+    <string name="hp_apps_help">Aiuto</string>
+    <string name="hp_apps_info_hidden">Le app nascoste e i loro widget verranno nascoste dal cassetto app</string>
+    <string name="hp_apps_info_protected">Le app protette richiedono l\'autenticazione per essere avviate</string>
+    <string name="hp_apps_unlock">Sblocca %1$s</string>
+</resources>
