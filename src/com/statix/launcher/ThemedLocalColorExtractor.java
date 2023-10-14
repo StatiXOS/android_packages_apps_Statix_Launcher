@@ -214,8 +214,7 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor
 
         if (wallpaperManager != null && !tempRectF.isEmpty()) {
             wallpaperManager.removeOnColorsChangedListener(this);
-            wallpaperManager.addOnColorsChangedListener(
-                    this, new ArrayList<RectF>(List.of(tempRectF)));
+            wallpaperManager.addOnColorsChangedListener(this, List.of(tempRectF), WallpaperManager.FLAG_SYSTEM);
         }
     }
 
@@ -232,7 +231,7 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor
     }
 
     @Override
-    public void onColorsChanged(RectF area, WallpaperColors colors) {
+    public void onColorsChanged(RectF region, WallpaperColors colors) {
         if (listener != null) {
             listener.onColorsChanged(generateColorsOverride(colors));
         }

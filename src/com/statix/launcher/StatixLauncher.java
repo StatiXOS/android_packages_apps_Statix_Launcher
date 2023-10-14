@@ -23,11 +23,18 @@ import android.view.View;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.RunnableList;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 
 import com.statix.launcher.hpapps.db.HpDatabaseHelper;
 
 public class StatixLauncher extends QuickstepLauncher {
+
+    private HpDatabaseHelper db;
+
+    public StatixLauncher() {
+        db = HpDatabaseHelper.getInstance(this);
+    }
 
     @Override
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -44,14 +51,13 @@ public class StatixLauncher extends QuickstepLauncher {
     }
 
     @Override
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        HpDatabaseHelper db = HpDatabaseHelper.getInstance(this);
+    public RunnableList startActivitySafely(View v, Intent intent, ItemInfo item) {
         ComponentName cn = item.getTargetComponent();
         boolean isProtected = cn != null && db.isPackageProtected(cn.getPackageName());
 
         if (isProtected) {
             startActivitySafelyAuth(v, intent, item);
-            return true;
+            return null;
         } else {
             return super.startActivitySafely(v, intent, item);
         }
