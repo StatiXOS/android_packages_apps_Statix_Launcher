@@ -45,4 +45,8 @@
     <string name="hp_apps_info_hidden">Le app nascoste e i loro widget verranno nascoste dal cassetto app</string>
     <string name="hp_apps_info_protected">Le app protette richiedono l\'autenticazione per essere avviate</string>
     <string name="hp_apps_unlock">Sblocca %1$s</string>
+
+    <!-- A widget category label for grouping widgets related to weather. [CHAR_LIMIT=30] -->
+    <string name="widget_category_weather">Meteo</string>
+
 </resources>
