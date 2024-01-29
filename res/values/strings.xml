@@ -45,4 +45,8 @@
     <string name="hp_apps_info_hidden">Hidden apps and their widgets are hidden from the drawer</string>
     <string name="hp_apps_info_protected">Protected apps require authentication to be opened from the launcher</string>
     <string name="hp_apps_unlock">Unlock %1$s</string>
+
+    <!-- A widget category label for grouping widgets related to weather. [CHAR_LIMIT=30] -->
+    <string name="widget_category_weather">Weather</string>
+
 </resources>
