@@ -4,10 +4,9 @@
     <dimen name="all_apps_search_bar_field_height">40dp</dimen>
     <dimen name="all_apps_search_bar_content_overlap">20dp</dimen>
     <dimen name="all_apps_search_bar_bottom_padding">50dp</dimen>
-    <dimen name="all_apps_header_top_margin">10dp</dimen>
+    <dimen name="all_apps_header_top_margin">16dp</dimen>
     <dimen name="all_apps_header_top_padding">70dp</dimen>
-    <dimen name="all_apps_header_pill_corner_radius">20dp</dimen>
-    <dimen name="all_apps_predicted_icon_vertical_padding">16dp</dimen>
+    <dimen name="all_apps_header_pill_corner_radius">8dp</dimen>
 
     <!--  Overview Task Views  -->
     <!--  The primary task thumbnail uses up to this much of the total screen height/width  -->
