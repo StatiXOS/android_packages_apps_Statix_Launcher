@@ -37,7 +37,6 @@
         <item name="popupShadeThird">@color/popup_shade_third_dark</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="notificationDotColor">@color/notification_dot_color_dark</item>
-        <item name="folderPaginationColor">@color/folder_pagination_color_dark</item>
         <item name="folderPreviewColor">@color/folder_preview_dark</item>
         <item name="folderBackgroundColor">@color/folder_background_dark</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>

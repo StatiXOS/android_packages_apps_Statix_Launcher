@@ -121,10 +121,9 @@ public class HpAppsActivity extends Activity
 
     @Override
     public void onUpdated(boolean result) {
-        LauncherAppState state = LauncherAppState.getInstanceNoCreate();
-        if (state != null) {
+        LauncherAppState.INSTANCE.executeIfCreated(state -> {
             state.getModel().forceReload();
-        }
+        });
     }
 
     @Override

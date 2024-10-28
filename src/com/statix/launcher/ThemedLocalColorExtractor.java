@@ -17,11 +17,8 @@
 package com.statix.launcher;
 
 import android.app.WallpaperColors;
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.provider.Settings;
 import android.util.SparseIntArray;
 import android.view.View;
@@ -40,8 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThemedLocalColorExtractor extends LocalColorExtractor
-        implements WallpaperManager.LocalWallpaperColorConsumer {
+public class ThemedLocalColorExtractor extends LocalColorExtractor {
 
     private static final String KEY_COLOR_SOURCE = "android.theme.customization.color_source";
 
@@ -53,13 +49,8 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor
     private static final List<Integer> NEUTRAL2_RES = new ArrayList();
 
     private Context mContext;
-    private final WallpaperManager wallpaperManager;
-    private Listener listener;
 
     private boolean applyOverlay = true;
-
-    // For calculating and returning bounds
-    private final RectF tempRectF = new RectF();
 
     static {
         ACCENT1_RES.add(android.R.color.system_accent1_10);
@@ -130,7 +121,6 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor
 
     public ThemedLocalColorExtractor(Context context) {
         mContext = context;
-        wallpaperManager = (WallpaperManager) context.getSystemService(Context.WALLPAPER_SERVICE);
         try {
             String json =
                     Settings.Secure.getString(
@@ -155,11 +145,6 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor
     }
 
     @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    @Override
     public SparseIntArray generateColorsOverride(WallpaperColors colors) {
         if (!applyOverlay) {
             return null;
@@ -170,52 +155,12 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor
                                 & Configuration.UI_MODE_NIGHT_MASK)
                         == Configuration.UI_MODE_NIGHT_YES;
         ColorScheme colorScheme = new ColorScheme(colors, darkMode, Style.VIBRANT);
-        addColorsToArray(colorScheme.getAccent1().getAllShades(), ACCENT1_RES, colorRes);
-        addColorsToArray(colorScheme.getAccent2().getAllShades(), ACCENT2_RES, colorRes);
-        addColorsToArray(colorScheme.getAccent3().getAllShades(), ACCENT3_RES, colorRes);
-        addColorsToArray(colorScheme.getNeutral1().getAllShades(), NEUTRAL1_RES, colorRes);
-        addColorsToArray(colorScheme.getNeutral2().getAllShades(), NEUTRAL2_RES, colorRes);
+        addColorsToArray(colorScheme.getAccent1().allShades, ACCENT1_RES, colorRes);
+        addColorsToArray(colorScheme.getAccent2().allShades, ACCENT2_RES, colorRes);
+        addColorsToArray(colorScheme.getAccent3().allShades, ACCENT3_RES, colorRes);
+        addColorsToArray(colorScheme.getNeutral1().allShades, NEUTRAL1_RES, colorRes);
+        addColorsToArray(colorScheme.getNeutral2().allShades, NEUTRAL2_RES, colorRes);
         return colorRes;
-    }
-
-    @Override
-    public void setWorkspaceLocation(Rect pos, View child, int screenId) {
-        ActivityContext activityContext =
-                (ActivityContext) ActivityContext.lookupContext(child.getContext());
-        if (!(activityContext instanceof Launcher)) {
-            tempRectF.setEmpty();
-            return;
-        }
-        Launcher launcher = (Launcher) activityContext;
-        DeviceProfile dp = launcher.getDeviceProfile().inv.getDeviceProfile(launcher);
-        float screenWidth = dp.widthPx;
-        float screenHeight = dp.heightPx;
-        int numScreens = launcher.getWorkspace().getNumPagesForWallpaperParallax();
-        float relativeScreenWidth = 1f / numScreens;
-
-        int[] dragLayerBounds = new int[2];
-        launcher.getDragLayer().getLocationOnScreen(dragLayerBounds);
-        // Translate from drag layer coordinates to screen coordinates.
-        int screenLeft = pos.left + dragLayerBounds[0];
-        int screenTop = pos.top + dragLayerBounds[1];
-        int screenRight = pos.right + dragLayerBounds[0];
-        int screenBottom = pos.bottom + dragLayerBounds[1];
-        tempRectF.left = (screenLeft / screenWidth + screenId) * relativeScreenWidth;
-        tempRectF.right = (screenRight / screenWidth + screenId) * relativeScreenWidth;
-        tempRectF.top = screenTop / screenHeight;
-        tempRectF.bottom = screenBottom / screenHeight;
-
-        if (tempRectF.left < 0
-                || tempRectF.right > 1
-                || tempRectF.top < 0
-                || tempRectF.bottom > 1) {
-            tempRectF.setEmpty();
-        }
-
-        if (wallpaperManager != null && !tempRectF.isEmpty()) {
-            wallpaperManager.removeOnColorsChangedListener(this);
-            wallpaperManager.addOnColorsChangedListener(this, List.of(tempRectF), WallpaperManager.FLAG_SYSTEM);
-        }
     }
 
     @Override
@@ -227,13 +172,6 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor
                 RemoteViews.ColorResources.create(base, generateColorsOverride(colors));
         if (res != null) {
             res.apply(base);
-        }
-    }
-
-    @Override
-    public void onColorsChanged(RectF region, WallpaperColors colors) {
-        if (listener != null) {
-            listener.onColorsChanged(generateColorsOverride(colors));
         }
     }
 }
