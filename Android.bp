@@ -43,7 +43,6 @@ android_app {
     srcs: [
         ":launcher-src",
         ":launcher-quickstep-src",
-        ":launcher-src_shortcuts_overrides",
         "src/**/*.java",
         "src_build_config/**/*.java",
     ],
