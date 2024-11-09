@@ -137,8 +137,8 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor {
 
     private static void addColorsToArray(
             List<Integer> colors, List<Integer> resMap, SparseIntArray array) {
-        for (int i = 0; i < colors.size(); i++) {
-            int shade = colors.get(i);
+        for (int i = 0; i < resMap.size(); i++) {
+            int shade = colors.get(i + 1);
             int resId = resMap.get(i);
             array.put(resId, 0xff000000 | shade);
         }
