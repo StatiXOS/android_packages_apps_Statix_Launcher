@@ -35,6 +35,7 @@ android_app {
     static_libs: [
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
+        "dagger2",
         "launcher-testing-shared",
         "QuickstepResLib",
         "libGoogleFeed",
@@ -42,6 +43,7 @@ android_app {
     ],
     srcs: [
         ":launcher-src",
+        ":launcher-quickstep-dagger",
         ":launcher-quickstep-src",
         "src/**/*.java",
         "src_build_config/**/*.java",
@@ -61,6 +63,7 @@ android_app {
         "Launcher3",
         "Launcher3QuickStep",
     ],
+    plugins: ["dagger2-compiler"],
 
     jacoco: {
         include_filter: ["com.android.launcher3.**", "com.statix.launcher.**"],
